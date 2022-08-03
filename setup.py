@@ -5,12 +5,14 @@ from setuptools import setup
 import re
 import os
 import io
-from configparser import ConfigParser
+try:
+    from configparser import ConfigParser
+except ImportError:
+    from configparser import ConfigParser
 
-MODULE = 'purchase_approval'
+MODULE = 'approval'
 PREFIX = 'nantic'
 MODULE2PREFIX = {
-    'approval': 'nantic',
     }
 
 
@@ -59,12 +61,6 @@ else:
     branch = series
 
 dependency_links = [
-    ('hg+https://bitbucket.org/nantic/'
-        'trytond-approval@%(branch)s'
-        '#egg=nantic-approval-%(series)s' % {
-            'branch': branch,
-            'series': series,
-            }),
     ]
 
 if minor_version % 2:
@@ -86,7 +82,8 @@ setup(name='%s_%s' % (PREFIX, MODULE),
         ],
     package_data={
         'trytond.modules.%s' % MODULE: (info.get('xml', [])
-            + ['tryton.cfg', 'locale/*.po', 'tests/*.rst']),
+            + ['tryton.cfg', 'view/*.xml', 'locale/*.po', '*.odt',
+                'icons/*.svg', 'tests/*.rst']),
         },
     classifiers=[
         'Development Status :: 5 - Production/Stable',
@@ -125,8 +122,4 @@ setup(name='%s_%s' % (PREFIX, MODULE),
     test_suite='tests',
     test_loader='trytond.test_loader:Loader',
     tests_require=tests_require,
-    use_2to3=True,
-    convert_2to3_doctests=[
-        'tests/scenario_purchase_approval.rst',
-        ],
     )
